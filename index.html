@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PortföySunum // Gayrimenkul İlan, Vitrin & Portföy Sunum Kartı Üretici</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; font-size: 11px !important; }
+            header, footer, #wizard-panel, .no-print { display: none !important; }
+            #showcase-card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; padding: 16px !important; border-radius: 0 !important; }
+            .print-break-inside-avoid { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-rose-600 p-2 rounded-xl text-white shadow">
+                    <i data-lucide="layout-template" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base md:text-lg tracking-tight leading-tight flex items-center gap-1.5">
+                        PortföySunum <span class="bg-rose-500/20 text-rose-400 font-bold text-[10px] px-2 py-0.5 rounded-full border border-rose-500/30">SHOWCASE</span>
+                    </h1>
+                    <p class="text-[10px] text-slate-400">bGroup // DATEX Tasarım • Portföy & Vitrin Kartı Motoru</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="ShowcaseApp.fillDemoData()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-xs flex items-center gap-1">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span class="hidden sm:inline">Örnek Portföy Doldur</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ANA İÇERİK -->
+    <main class="max-w-6xl mx-auto px-4 py-5 flex-1 w-full space-y-5">
+
+        <!-- KONTROL & VERİ GİRİŞ FORMU -->
+        <section id="wizard-panel" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4 no-print">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <i data-lucide="sliders" class="w-4 h-4 text-rose-600"></i>
+                <h2 class="font-bold text-slate-900 text-sm md:text-base">İlan & Portföy Bilgilerini Düzenle</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- 1. TEMEL PORTFÖY BİLGİLERİ -->
+                <div class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5"><i data-lucide="home" class="w-3.5 h-3.5 text-rose-600"></i> İlan Başlığı & Fiyat</h3>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">İlan Başlığı</label>
+                        <input type="text" id="f-title" value="Bahçelievler Merkezde Satılık Lüks 3+1 Sıfır Daire" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-semibold">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">İlan Türü</label>
+                            <select id="f-type" onchange="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold text-rose-600">
+                                <option value="SATILIK">SATILIK</option>
+                                <option value="KİRALIK">KİRALIK</option>
+                                <option value="DEVREN">DEVREN</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Fiyat (TL)</label>
+                            <input type="number" id="f-price" value="7850000" step="50000" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-black text-slate-900">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Lokasyon (İlçe / İl)</label>
+                        <input type="text" id="f-location" value="Bahçelievler / İstanbul" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs">
+                    </div>
+                </div>
+
+                <!-- 2. TEKNİK ÖZELLİKLER & METREKARE -->
+                <div class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5"><i data-lucide="check-square" class="w-3.5 h-3.5 text-blue-600"></i> Teknik Detaylar</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Oda Sayısı</label>
+                            <input type="text" id="f-rooms" value="3+1" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Brüt / Net m²</label>
+                            <input type="text" id="f-area" value="135 m² / 120 m²" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Bulunduğu Kat / Yaş</label>
+                            <input type="text" id="f-floor" value="3. Kat / 0 (Sıfır)" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Isınma & Tapu Durumu</label>
+                            <input type="text" id="f-heating" value="Kombi / Kat Mülkiyetli" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Öne Çıkan Özellikler (Virgülle)</label>
+                        <input type="text" id="f-features" value="Metroya 3 Dk, Kapalı Otopark, Ebeveyn Banyolu, Balkonlu, Asansörlü" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs">
+                    </div>
+                </div>
+
+                <!-- 3. GÖRSEL VE DANIŞMAN BİLGİSİ -->
+                <div class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5"><i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-600"></i> Görsel & Danışman Kartı</h3>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Mülk Görseli URL veya Seçimi</label>
+                        <input type="text" id="f-image-url" value="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Yetkili Danışman / Ofis</label>
+                        <input type="text" id="f-agent-name" value="Batuhan Bayatlı // Gayrimenkul & Yatırım" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">İletişim & Telefon</label>
+                        <input type="text" id="f-agent-phone" value="+90 532 000 00 00" oninput="ShowcaseApp.render()" class="w-full bg-white border border-slate-300 rounded p-1.5 text-xs">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- YAZDIRILABİLİR A4 / VİTRİN VE PORTFÖY KARTI -->
+        <div id="showcase-card" class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md space-y-6">
+            
+            <!-- KART ÜST BAŞLIK -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b-2 border-slate-900">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="disp-type-badge" class="px-3 py-1 rounded-full bg-rose-600 text-white text-xs font-black tracking-wider uppercase">SATILIK</span>
+                        <span class="text-xs font-bold text-slate-500 flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-500"></i> <span id="disp-location">Bahçelievler / İstanbul</span></span>
+                    </div>
+                    <h2 id="disp-title" class="text-lg md:text-2xl font-black text-slate-900 mt-1 leading-snug">Bahçelievler Merkezde Satılık Lüks 3+1 Sıfır Daire</h2>
+                </div>
+                <div class="text-left sm:text-right bg-rose-50/60 p-3 rounded-2xl sm:bg-transparent sm:p-0">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold block">Fiyat</span>
+                    <span id="disp-price" class="text-2xl md:text-3xl font-black text-rose-600">7.850.000 ₺</span>
+                </div>
+            </div>
+
+            <!-- GÖRSEL VE 4'LÜ DONATI IZGARASI -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                
+                <!-- SOL: MÜLK FOTOĞRAFI -->
+                <div class="md:col-span-2 rounded-2xl overflow-hidden border border-slate-200 h-64 md:h-80 bg-slate-100 relative shadow-inner">
+                    <img id="disp-image" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80" alt="Mülk Fotoğrafı" class="w-full h-full object-cover">
+                    <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5">
+                        <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i> Portföy No: <span id="disp-portfolio-no">#P-202689</span>
+                    </div>
+                </div>
+
+                <!-- SAĞ: TEKNİK BİLGİ KARTLARI -->
+                <div class="grid grid-cols-2 gap-2.5 text-center">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col justify-center items-center">
+                        <i data-lucide="layout-grid" class="w-5 h-5 text-indigo-600 mb-1"></i>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Oda Sayısı</span>
+                        <strong id="disp-rooms" class="text-sm font-extrabold text-slate-900">3+1</strong>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col justify-center items-center">
+                        <i data-lucide="maximize" class="w-5 h-5 text-emerald-600 mb-1"></i>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Metrekare</span>
+                        <strong id="disp-area" class="text-sm font-extrabold text-slate-900">135 m² / 120 m²</strong>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col justify-center items-center">
+                        <i data-lucide="building" class="w-5 h-5 text-amber-600 mb-1"></i>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Kat / Bina Yaşı</span>
+                        <strong id="disp-floor" class="text-xs font-extrabold text-slate-900">3. Kat / 0 Yaş</strong>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col justify-center items-center">
+                        <i data-lucide="file-check" class="w-5 h-5 text-blue-600 mb-1"></i>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Isıtma & Tapu</span>
+                        <strong id="disp-heating" class="text-xs font-extrabold text-slate-900">Kombi / Kat Mülk.</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ÖNE ÇIKAN AVANTAJLAR (CHIPS) -->
+            <div class="space-y-2 pt-1 print-break-inside-avoid">
+                <span class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1.5">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i> Portföy Avantajları & Donatılar:
+                </span>
+                <div id="disp-features-container" class="flex flex-wrap gap-2">
+                    <!-- Dinamik Chips -->
+                </div>
+            </div>
+
+            <!-- ALT: YETKİLİ DANIŞMAN & OFİS KARTI -->
+            <div class="bg-slate-900 text-white p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md print-break-inside-avoid">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-600 flex items-center justify-center font-black text-white text-base shadow">
+                        BB
+                    </div>
+                    <div>
+                        <span id="disp-agent-name" class="font-extrabold text-sm text-white block">Batuhan Bayatlı // Gayrimenkul & Yatırım</span>
+                        <span class="text-[11px] text-slate-400">bGroup // DATEX Tasarım Portföy Ağı</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t border-slate-800 sm:border-0 pt-2 sm:pt-0">
+                    <div class="text-left sm:text-right">
+                        <span class="text-[10px] text-slate-400 block uppercase">İletişim & Randevu</span>
+                        <span id="disp-agent-phone" class="font-black text-rose-400 text-sm md:text-base">+90 532 000 00 00</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- AKSİYON BUTONLARI -->
+        <div class="flex flex-col sm:flex-row items-center gap-3 no-print">
+            <button onclick="window.print()" class="w-full sm:flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-xs md:text-sm flex items-center justify-center gap-2 shadow transition">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span>A4 Vitrin / Portföy Dosyası Olarak Yazdır (PDF)</span>
+            </button>
+            <button onclick="ShowcaseApp.shareWhatsApp()" class="w-full sm:flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-xs md:text-sm flex items-center justify-center gap-2 shadow transition">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                <span>Portföy Bilgisini WhatsApp ile Paylaş</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-4 px-4 text-center mt-auto no-print">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-700">PortföySunum SHOWCASE</span>
+                <span>•</span>
+                <span>bGroup // DATEX Tasarım</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>Geliştirici: <strong class="text-slate-800">Batuhan Bayatlı</strong></span>
+                <a href="https://www.linkedin.com/in/batuhanbayatlı/" target="_blank" class="text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 transition">
+                    <i data-lucide="linkedin" class="w-3.5 h-3.5"></i> LinkedIn
+                </a>
+                <a href="https://github.com/batuhanbayatli" target="_blank" class="text-slate-700 hover:text-slate-900 font-bold flex items-center gap-1 transition">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT GÖRSEL & DÖKÜM MOTORU -->
+    <script>
+        class ShowcaseApp {
+            static render() {
+                const title = document.getElementById('f-title').value;
+                const type = document.getElementById('f-type').value;
+                const price = Number(document.getElementById('f-price').value) || 0;
+                const location = document.getElementById('f-location').value;
+                const rooms = document.getElementById('f-rooms').value;
+                const area = document.getElementById('f-area').value;
+                const floor = document.getElementById('f-floor').value;
+                const heating = document.getElementById('f-heating').value;
+                const featuresStr = document.getElementById('f-features').value;
+                const imageUrl = document.getElementById('f-image-url').value;
+                const agentName = document.getElementById('f-agent-name').value;
+                const agentPhone = document.getElementById('f-agent-phone').value;
+
+                // UI Text Basımları
+                document.getElementById('disp-title').innerText = title;
+                document.getElementById('disp-type-badge').innerText = type;
+                document.getElementById('disp-location').innerText = location;
+                document.getElementById('disp-price').innerText = price.toLocaleString('tr-TR') + ' ₺';
+                document.getElementById('disp-rooms').innerText = rooms;
+                document.getElementById('disp-area').innerText = area;
+                document.getElementById('disp-floor').innerText = floor;
+                document.getElementById('disp-heating').innerText = heating;
+                document.getElementById('disp-image').src = imageUrl;
+                document.getElementById('disp-agent-name').innerText = agentName;
+                document.getElementById('disp-agent-phone').innerText = agentPhone;
+
+                // Features Chips Basımı
+                const container = document.getElementById('disp-features-container');
+                container.innerHTML = '';
+                const features = featuresStr.split(',').map(f => f.trim()).filter(f => f.length > 0);
+                features.forEach(feat => {
+                    const span = document.createElement('span');
+                    span.className = "px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 text-xs font-semibold border border-slate-200 flex items-center gap-1";
+                    span.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-600"></i> ${feat}`;
+                    container.appendChild(span);
+                });
+
+                lucide.createIcons();
+            }
+
+            static fillDemoData() {
+                document.getElementById('f-title').value = "Bakırköy Sahilde Deniz Manzaralı 4+1 Özel Tasarım Daire";
+                document.getElementById('f-type').value = "SATILIK";
+                document.getElementById('f-price').value = 14500000;
+                document.getElementById('f-location').value = "Bakırköy / İstanbul";
+                document.getElementById('f-rooms').value = "4+1";
+                document.getElementById('f-area').value = "190 m² / 170 m²";
+                document.getElementById('f-floor').value = "5. Kat / 2 Yaş";
+                document.getElementById('f-heating').value = "Yerden Isıtma / Kat Mülk.";
+                document.getElementById('f-features').value = "Panoramik Deniz Manzarası, 2 Araçlık Kapalı Otopark, Akıllı Ev Sistemi, Ebeveyn Giyinme Odası, 7/24 Güvenlik";
+                document.getElementById('f-image-url').value = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80";
+                ShowcaseApp.render();
+            }
+
+            static shareWhatsApp() {
+                const title = document.getElementById('disp-title').innerText;
+                const type = document.getElementById('disp-type-badge').innerText;
+                const price = document.getElementById('disp-price').innerText;
+                const loc = document.getElementById('disp-location').innerText;
+                const rooms = document.getElementById('disp-rooms').innerText;
+                const area = document.getElementById('disp-area').innerText;
+                const agent = document.getElementById('disp-agent-name').innerText;
+                const phone = document.getElementById('disp-agent-phone').innerText;
+
+                const text = encodeURIComponent(`🏡 *PORTFÖY BİLGİ KARTI [${type}]*\n\n✨ *${title}*\n📍 *Konum:* ${loc}\n💰 *Fiyat:* ${price}\n📐 *Alan / Oda:* ${rooms} • ${area}\n\n👤 *Yetkili Danışman:* ${agent}\n📞 *İletişim:* ${phone}\n\n_PortföySunum SHOWCASE // bGroup - DATEX Tasarım_`);
+                window.open(`https://wa.me/?text=${text}`, '_blank');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ShowcaseApp.render();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
